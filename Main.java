@@ -10,16 +10,16 @@ public class Main extends JFrame implements ActionListener {
             bottomRight, bottomMid, bottomLeft;
     JButton undo, resetSeed, newSeed;
 	JPanel keypad, utilities, container, movecontainer;
-    JLabel movesLabel;
+    JLabel movesLabel, seedLabel;
     String moves = "Moves: ";
     int movesNum = 0;
-
-    HivePuzzle puz = new HivePuzzle();
 
     Icon barsIcon = new ImageIcon("C:\\Users\\ykozh\\Documents\\GitHub\\Hive-Puzzle-Sim\\bars.png");
     Icon AcrossIcon = new ImageIcon("C:\\Users\\ykozh\\Documents\\GitHub\\Hive-Puzzle-Sim\\Across.png");
     Icon radioIcon = new ImageIcon("C:\\Users\\ykozh\\Documents\\GitHub\\Hive-Puzzle-Sim\\radio.png");
     Icon bugIcon = new ImageIcon("C:\\Users\\ykozh\\Documents\\GitHub\\Hive-Puzzle-Sim\\bug.png");
+
+    HivePuzzle puz = new HivePuzzle(barsIcon, AcrossIcon, radioIcon, bugIcon);
 
     private void updateBoard(HivePuzzle p){
         topRight.setIcon(p.board[0].viewIcon());
@@ -31,15 +31,6 @@ public class Main extends JFrame implements ActionListener {
         bottomRight.setIcon(p.board[6].viewIcon());
         bottomMid.setIcon(p.board[7].viewIcon());
         bottomLeft.setIcon(p.board[8].viewIcon());
-        // topRight.setText(p.board[0].view());
-        // topMid.setText(p.board[1].view());
-        // topLeft.setText(p.board[2].view());
-        // centerRight.setText(p.board[3].view());
-        // center.setText(p.board[4].view());
-        // centerLeft.setText(p.board[5].view());
-        // bottomRight.setText(p.board[6].view());
-        // bottomMid.setText(p.board[7].view());
-        // bottomLeft.setText(p.board[8].view());
     }
 
 	public Main() {
@@ -55,6 +46,9 @@ public class Main extends JFrame implements ActionListener {
         movecontainer = new JPanel();
         movecontainer.setLayout(new FlowLayout());
         movecontainer.add(movesLabel);
+        
+        seedLabel = new JLabel("Seed: " + puz.seed, SwingConstants.RIGHT);
+        movecontainer.add(seedLabel);
         
 		topRight = new JButton(barsIcon);
         topRight.setPreferredSize(new Dimension(60,60));
@@ -133,21 +127,20 @@ public class Main extends JFrame implements ActionListener {
         container.add(utilities);
 
         add(container);
-        //setResizable(false);
-        //pack();
+        setResizable(false);
         setSize(250, 300);
 		setVisible(true);
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == undo) {
+		if (e.getSource() == undo) { // UNDO
             if (movesNum > 0){
                 movesNum--;
                 movesLabel.setText(moves + movesNum);   
                 puz.undo();
                 updateBoard(puz);
             }
-		} else if (e.getSource() == topRight){ //TOP RIGHT
+		} else if (e.getSource() == topRight){ // TOP RIGHT
             puz.makeMove(0,0);
             movesNum++;            
             movesLabel.setText(moves + movesNum);      
@@ -201,9 +194,18 @@ public class Main extends JFrame implements ActionListener {
             puz.newSeed();
             movesNum = 0;
             movesLabel.setText(moves + movesNum);       
+            seedLabel.setText("Seed: " + readifySeed(puz.seed));
             updateBoard(puz);
         }
 	}
+
+    private String readifySeed(String seed){
+        char[] c = seed.toCharArray();
+        for (int ii = 0; ii < c.length; ii++){
+            c[ii] = (char)((int)c[ii] + 48);
+        }
+        return String.valueOf(c);
+    }
 
 	public static void main(String args[]) {
 		Main coo = new Main();

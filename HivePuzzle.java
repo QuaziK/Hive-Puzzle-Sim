@@ -89,26 +89,18 @@ public class HivePuzzle {
     
     ArrayList<Tuple<Integer, Integer>> moves = new ArrayList<Tuple<Integer, Integer>>();
 
-    //TODO: update the rest of the tiles with increment
+    public HivePuzzle(Icon a, Icon b, Icon c, Icon d){
+        barsIcon = a;
+        AcrossIcon = b;
+        radioIcon = c;
+        bugIcon = d;
+    }
+
     public void makeMove(int x, int y){
         Tuple<Integer, Integer> t = new Tuple<Integer,Integer>(x, y);
         moves.add(t);
         int target = matrixToLinear(x,y);
-        int[] collat = {target, target+3,target+6,target-3,target-6, -1, -1};
-        switch (target%3) {
-            case 0:
-                collat[5] = target + 1;
-                collat[6] = target + 2;
-                break;
-            case 1:
-                collat[5] = target + 1;
-                collat[6] = target - 1;
-                break;
-            case 2:
-                collat[5] = target - 1;
-                collat[6] = target - 2;
-                break;
-        }
+        int[] collat = getCollat(target);
         for (int ii = 0; ii<collat.length; ii++){
             try {
                 board[collat[ii]].goNext();
@@ -126,7 +118,9 @@ public class HivePuzzle {
     }
     
     public void newSeed(){
-        char[] newseed = generateSeed().toCharArray();
+        seed = generateSeed();
+        char[] newseed = seed.toCharArray();
+        seed = String.valueOf(newseed);
         for (int ii = 0; ii < 9; ii++){
             board[ii].setSeed((int)newseed[ii]);
         }
@@ -140,11 +134,21 @@ public class HivePuzzle {
         return String.valueOf(outc);
     }
     
-    //TODO: all of undo
     public void undo(){
         Tuple<Integer,Integer> t = moves.get(moves.size()-1);
         moves.remove(moves.size()-1);
         int target = matrixToLinear(t.x,t.y);
+        int[] collat = getCollat(target);
+        for (int ii = 0; ii<collat.length; ii++){
+            try {
+                board[collat[ii]].goPrevious();
+            } catch (IndexOutOfBoundsException E) {
+                // do nothing
+            }
+        }        
+    }
+    
+    private int[] getCollat(int target){
         int[] collat = {target, target+3,target+6,target-3,target-6, -1, -1};
         switch (target%3) {
             case 0:
@@ -160,13 +164,7 @@ public class HivePuzzle {
                 collat[6] = target - 2;
                 break;
         }
-        for (int ii = 0; ii<collat.length; ii++){
-            try {
-                board[collat[ii]].goPrevious();
-            } catch (IndexOutOfBoundsException E) {
-                // do nothing
-            }
-        }        
+        return collat;
     }
     
     private int matrixToLinear(int x, int y){
