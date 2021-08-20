@@ -86,6 +86,7 @@ public class HivePuzzle {
                         new HiveTile(icontypes), new HiveTile(icontypes), new HiveTile(icontypes)};
 
     String seed = "000000000";
+    final char[] blankSeed = {0,0,0, 0,0,0, 0,0,0};
 
     ArrayList<Tuple<Integer, Integer>> moves = new ArrayList<Tuple<Integer, Integer>>();
 
@@ -110,6 +111,18 @@ public class HivePuzzle {
         }
     }
 
+    private void makeReverseMove(int x, int y){
+        int target = matrixToLinear(x,y);
+        int[] collat = getCollat(target);
+        for (int ii = 0; ii<collat.length; ii++){
+            try {
+                this.board[collat[ii]].goPrevious();
+            } catch (IndexOutOfBoundsException E) {
+                // do nothing
+            }
+        }
+    }
+
     public void resetSeed(){
         char[] seedc = seed.toCharArray();
         for (int ii = 0; ii < 9; ii++){
@@ -126,12 +139,39 @@ public class HivePuzzle {
         }
     }
 
-    private String generateSeed(){
+    public String generateSeed(){
         char[] outc = new char[9];
         for (int ii = 0; ii < 9; ii++){
             outc[ii] = (char)(int)Math.floor(Math.random()*(3-0+1)+0);
         }
         return String.valueOf(outc);
+    }
+
+    public void setSeed(String seed){
+        this.seed = seed;
+        char[] newseed = seed.toCharArray();
+        seed = String.valueOf(newseed);
+        for (int ii = 0; ii < 9; ii++){
+            board[ii].setSeed((int)newseed[ii]);
+        }        
+    }
+
+    public String generateStepSeed(int steps){
+        this.setSeed(String.valueOf(blankSeed));
+        for (int ii = 0; ii < steps; ii++){
+            int x = (int) (Math.random() * 2);
+            int y = (int) (Math.random() * 2);
+            this.makeReverseMove(x,y);
+        }
+        return this.getState();
+    }
+
+    public String getState(){
+        char[] out = new char[9];
+        for (int ii = 0; ii < board.length; ii++){
+            out[ii] = (char) board[ii].num;
+        }
+        return String.valueOf(out);
     }
 
     public void undo(){

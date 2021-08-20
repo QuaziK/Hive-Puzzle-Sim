@@ -9,18 +9,27 @@ public class Main extends JFrame implements ActionListener {
             centerRight, center, centerLeft,
             bottomRight, bottomMid, bottomLeft;
     JButton undo, resetSeed, newSeed;
-	JPanel keypad, utilities, container, movecontainer;
+	JPanel keypad, utilities, container, movecontainer, newSeedContainer;
     JLabel movesLabel, seedLabel;
     String moves = "Moves: ";
     int movesNum = 0;
 
-    Icon barsIcon = new ImageIcon("C:\\Users\\ykozh\\Documents\\GitHub\\Hive-Puzzle-Sim\\bars.png");
+    Icon barsIcon   = new ImageIcon("C:\\Users\\ykozh\\Documents\\GitHub\\Hive-Puzzle-Sim\\bars.png");
     Icon AcrossIcon = new ImageIcon("C:\\Users\\ykozh\\Documents\\GitHub\\Hive-Puzzle-Sim\\Across.png");
-    Icon radioIcon = new ImageIcon("C:\\Users\\ykozh\\Documents\\GitHub\\Hive-Puzzle-Sim\\radio.png");
-    Icon bugIcon = new ImageIcon("C:\\Users\\ykozh\\Documents\\GitHub\\Hive-Puzzle-Sim\\bug.png");
+    Icon radioIcon  = new ImageIcon("C:\\Users\\ykozh\\Documents\\GitHub\\Hive-Puzzle-Sim\\radio.png");
+    Icon bugIcon    = new ImageIcon("C:\\Users\\ykozh\\Documents\\GitHub\\Hive-Puzzle-Sim\\bug.png");
 
     HivePuzzle puz = new HivePuzzle(barsIcon, AcrossIcon, radioIcon, bugIcon);
 
+    JPanel optionsContainer;
+    String[] options = {"2 steps", "3 steps", "4 steps", "5 steps"};
+    JButton setRandomButton, loadSeedButton;
+    JTextField customSeedField;
+    JComboBox<String> stepOptionsBox;
+    
+    javax.swing.Timer timer;
+    int timerCounter = 0;
+    
     private void updateBoard(HivePuzzle p){
         topRight.setIcon(p.board[0].viewIcon());
         topMid.setIcon(p.board[1].viewIcon());
@@ -31,16 +40,19 @@ public class Main extends JFrame implements ActionListener {
         bottomRight.setIcon(p.board[6].viewIcon());
         bottomMid.setIcon(p.board[7].viewIcon());
         bottomLeft.setIcon(p.board[8].viewIcon());
+        seedLabel.setText("Seed: " + readifySeed(p.seed));
     }
 
-	public Main() {
+	public Main(javax.swing.Timer timer) {
 		super("Hive Puzzle");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+		this.setLocation(dim.width / 2 - this.getSize().width / 2 - 125, dim.height / 2 - this.getSize().height / 2 - 210);
+        
+        this.timer = timer;
         
         container = new JPanel();
-        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+        container.setLayout(new FlowLayout());
         
         movesLabel = new JLabel(moves + movesNum, SwingConstants.LEFT);
         movecontainer = new JPanel();
@@ -126,9 +138,33 @@ public class Main extends JFrame implements ActionListener {
         
         container.add(utilities);
 
+        optionsContainer = new JPanel();
+        optionsContainer.setLayout(new FlowLayout());
+        optionsContainer.setPreferredSize(new Dimension(250,300));
+        
+        setRandomButton = new JButton("RNDM");
+        setRandomButton.setPreferredSize(new Dimension(100,25));
+        setRandomButton.addActionListener(this);
+        stepOptionsBox = new JComboBox<String>(options);    
+        stepOptionsBox.setPreferredSize(new Dimension(100,25));
+        stepOptionsBox.addActionListener(this);
+        customSeedField = new JTextField("000000000", 18);
+        customSeedField.setPreferredSize(new Dimension(205,25));
+        customSeedField.addActionListener(this);
+        loadSeedButton = new JButton("LOAD");
+        loadSeedButton.setPreferredSize(new Dimension(205,25));
+        loadSeedButton.addActionListener(this);
+        
+        optionsContainer.add(setRandomButton);
+        optionsContainer.add(stepOptionsBox);
+        optionsContainer.add(customSeedField);
+        optionsContainer.add(loadSeedButton);
+        
+        container.add(optionsContainer);
+
         add(container);
         setResizable(false);
-        setSize(250, 300);
+        setSize(250, 420);
 		setVisible(true);
 	}
 
@@ -190,15 +226,62 @@ public class Main extends JFrame implements ActionListener {
             movesNum = 0;
             movesLabel.setText(moves + movesNum);       
             updateBoard(puz);
-        } else if (e.getSource() == newSeed){ // NEW SEED
+        } else if (e.getSource() == newSeed){ // NEW SEED  
+            setEnabledAll(false);
+            timer.start();
+            timerCounter++;
+            if (timerCounter > 10){
+                timerCounter = 0;
+                timer.stop();
+                setEnabledAll(true);
+            }
             puz.newSeed();
             movesNum = 0;
             movesLabel.setText(moves + movesNum);       
             seedLabel.setText("Seed: " + readifySeed(puz.seed));
             updateBoard(puz);
         }
+        if (e.getSource() == setRandomButton) { // RNDM 
+            customSeedField.setText(readifySeed(puz.generateSeed()));
+        } else if (e.getSource() == loadSeedButton) { // LOAD
+            puz.setSeed(unredifySeed(customSeedField.getText()));
+            updateBoard(puz);
+        } else if (e.getSource() == stepOptionsBox){ // STEPS BOX
+            String s = (String) stepOptionsBox.getSelectedItem();
+            switch (s){
+                case "2 steps":
+                    customSeedField.setText(readifySeed(puz.generateStepSeed(2)));
+                    break;
+                case "3 steps":
+                    customSeedField.setText(readifySeed(puz.generateStepSeed(3)));                    
+                    break;
+                case "4 steps":
+                    customSeedField.setText(readifySeed(puz.generateStepSeed(4)));
+                    break;
+                case "5 steps":
+                    customSeedField.setText(readifySeed(puz.generateStepSeed(5)));
+                    break;                    
+            }
+        } else if (e.getSource() == timer){
+            actionPerformed(new ActionEvent(newSeed, 69, "asd"));
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException E){
+                
+            }
+        }
 	}
 
+    private void setEnabledAll(boolean b){
+        newSeed.setEnabled(b);
+        // undo.setEnabled(b);
+        // resetSeed.setEnabled(b);
+        // setRandomButton.setEnabled(b);
+        // loadSeedButton.setEnabled(b);
+        // customSeedField.setEnabled(b);
+        // stepOptionsBox.setEnabled(b);
+    }
+    
     private String readifySeed(String seed){
         char[] c = seed.toCharArray();
         for (int ii = 0; ii < c.length; ii++){
@@ -207,7 +290,18 @@ public class Main extends JFrame implements ActionListener {
         return String.valueOf(c);
     }
 
-	public static void main(String args[]) {
-		Main coo = new Main();
+    private String unredifySeed(String seed){
+        char[] c = seed.toCharArray();
+        for (int ii = 0; ii < c.length; ii++){
+            c[ii] = (char)((int)c[ii] - 48);
+        }
+        return String.valueOf(c);              
+    }
+
+	public static void main(String args[]) {   
+        javax.swing.Timer timer = new javax.swing.Timer(100, null);
+        //timer.setInitialDelay(0);    
+		Main coo = new Main(timer);
+        timer.addActionListener(coo);   
 	}
 }
