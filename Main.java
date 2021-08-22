@@ -7,7 +7,7 @@ public class Main extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1;
 	JButton topRight, topMid, topLeft,
             centerRight, center, centerLeft,
-            bottomRight, bottomMid, bottomLeft;
+            bottomRight, bottomMid, bottomLeft; // 9 button keypad 
     JButton undo, resetSeed, newSeed;
 	JPanel keypad, utilities, container, movecontainer, newSeedContainer;
     JLabel movesLabel, seedLabel;
@@ -19,7 +19,7 @@ public class Main extends JFrame implements ActionListener {
     Icon radioIcon  = new ImageIcon("C:\\Users\\ykozh\\Documents\\GitHub\\Hive-Puzzle-Sim\\radio.png");
     Icon bugIcon    = new ImageIcon("C:\\Users\\ykozh\\Documents\\GitHub\\Hive-Puzzle-Sim\\bug.png");
 
-    HivePuzzle puz = new HivePuzzle(barsIcon, AcrossIcon, radioIcon, bugIcon);
+    HivePuzzle puz = new HivePuzzle(barsIcon, AcrossIcon, radioIcon, bugIcon); 
 
     JPanel optionsContainer;
     String[] options = {"2 steps", "3 steps", "4 steps", "5 steps"};
@@ -30,7 +30,7 @@ public class Main extends JFrame implements ActionListener {
     javax.swing.Timer timer;
     int timerCounter = 0;
     
-    private void updateBoard(HivePuzzle p){
+    private void updateBoard(HivePuzzle p){ // update the 9 button keypad and seed label to what each tile says
         topRight.setIcon(p.board[0].viewIcon());
         topMid.setIcon(p.board[1].viewIcon());
         topLeft.setIcon(p.board[2].viewIcon());
@@ -43,7 +43,7 @@ public class Main extends JFrame implements ActionListener {
         seedLabel.setText("Seed: " + readifySeed(p.seed));
     }
 
-	public Main(javax.swing.Timer timer) {
+	public Main(javax.swing.Timer timer) { // create window with timer object
 		super("Hive Puzzle");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -54,59 +54,52 @@ public class Main extends JFrame implements ActionListener {
         container = new JPanel();
         container.setLayout(new FlowLayout());
         
-        movesLabel = new JLabel(moves + movesNum, SwingConstants.LEFT);
+        movesLabel = new JLabel(moves + movesNum, SwingConstants.LEFT); // container for moves and seed labels
         movecontainer = new JPanel();
         movecontainer.setLayout(new FlowLayout());
         movecontainer.add(movesLabel);
-        
         seedLabel = new JLabel("Seed: " + puz.seed, SwingConstants.RIGHT);
         movecontainer.add(seedLabel);
         
-		topRight = new JButton(barsIcon);
-        topRight.setPreferredSize(new Dimension(60,60));
-        topRight.setFont(new Font("Arial", Font.PLAIN, 20));
-        topRight.addActionListener(this);
+        // <-- setting up keypad buttons
+		topRight = new JButton(barsIcon); // initialize with icon
+        topRight.setPreferredSize(new Dimension(60,60)); // setup forced square dimensions
+        topRight.addActionListener(this); // add AL
         
         topMid = new JButton(barsIcon);
         topMid.setPreferredSize(new Dimension(60,60));
-        topMid.setFont(new Font("Arial", Font.PLAIN, 20));
         topMid.addActionListener(this);
         
         topLeft = new JButton(barsIcon);
         topLeft.setPreferredSize(new Dimension(60,60));
-        topLeft.setFont(new Font("Arial", Font.PLAIN, 20));
         topLeft.addActionListener(this);
         
         centerRight = new JButton(barsIcon);
         centerRight.setPreferredSize(new Dimension(60,60));
-        centerRight.setFont(new Font("Arial", Font.PLAIN, 20));
         centerRight.addActionListener(this);
         
         center = new JButton(barsIcon);
         center.setPreferredSize(new Dimension(60,60));
-        center.setFont(new Font("Arial", Font.PLAIN, 20));
         center.addActionListener(this);
         
         centerLeft = new JButton(barsIcon);
         centerLeft.setPreferredSize(new Dimension(60,60));
-        centerLeft.setFont(new Font("Arial", Font.PLAIN, 20));
         centerLeft.addActionListener(this);
         
         bottomRight = new JButton(barsIcon);
         bottomRight.setPreferredSize(new Dimension(60,60));
-        bottomRight.setFont(new Font("Arial", Font.PLAIN, 20));
         bottomRight.addActionListener(this);
         
         bottomMid = new JButton(barsIcon);
         bottomMid.setPreferredSize(new Dimension(60,60));
-        bottomMid.setFont(new Font("Arial", Font.PLAIN, 20));
         bottomMid.addActionListener(this);
         
         bottomLeft = new JButton(barsIcon);
         bottomLeft.setPreferredSize(new Dimension(60,60));
-        bottomLeft.setFont(new Font("Arial", Font.PLAIN, 20));
         bottomLeft.addActionListener(this);
+        // keypad buttons end -->
         
+        // utility buttons
         undo = new JButton("Undo");
         undo.addActionListener(this);
         resetSeed = new JButton("Reset");
@@ -114,12 +107,15 @@ public class Main extends JFrame implements ActionListener {
         newSeed = new JButton("New");
         newSeed.addActionListener(this);
         
+        // keypad and utility containers
         keypad = new JPanel();
         keypad.setLayout(new GridLayout(3,3));
         utilities = new JPanel();
         
+        // add label container to global container
         container.add(movecontainer);  
         
+        // add keypad buttons to keypad container
         keypad.add(topRight);
         keypad.add(topMid);
         keypad.add(topLeft);
@@ -130,12 +126,15 @@ public class Main extends JFrame implements ActionListener {
         keypad.add(bottomMid);
         keypad.add(bottomLeft);
         
+        // add keypad container to global container
         container.add(keypad);
         
+        // add utility buttons to utility container
         utilities.add(undo);
         utilities.add(resetSeed);
         utilities.add(newSeed);
         
+        // add utility container to global container
         container.add(utilities);
 
         optionsContainer = new JPanel();
@@ -230,7 +229,7 @@ public class Main extends JFrame implements ActionListener {
             setEnabledAll(false);
             timer.start();
             timerCounter++;
-            if (timerCounter > 10){
+            if (timerCounter > 5){
                 timerCounter = 0;
                 timer.stop();
                 setEnabledAll(true);
@@ -302,6 +301,6 @@ public class Main extends JFrame implements ActionListener {
         javax.swing.Timer timer = new javax.swing.Timer(100, null);
         //timer.setInitialDelay(0);    
 		Main coo = new Main(timer);
-        timer.addActionListener(coo);   
+        timer.addActionListener(coo);          
 	}
 }
