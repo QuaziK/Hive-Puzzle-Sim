@@ -157,13 +157,14 @@ public class HivePuzzle {
     }
 
     public String generateStepSeed(int steps){
-        this.setSeed(String.valueOf(blankSeed));
+        HivePuzzle temp = new HivePuzzle(barsIcon, AcrossIcon, radioIcon, bugIcon);
+        temp.setSeed(String.valueOf(blankSeed));
         for (int ii = 0; ii < steps; ii++){
             int x = (int) (Math.random() * 2);
             int y = (int) (Math.random() * 2);
-            this.makeReverseMove(x,y);
+            temp.makeReverseMove(x,y);
         }
-        return this.getState();
+        return temp.getState();
     }
 
     public String getState(){
