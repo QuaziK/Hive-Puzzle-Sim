@@ -85,8 +85,8 @@ public class HivePuzzle {
                         new HiveTile(icontypes), new HiveTile(icontypes), new HiveTile(icontypes),
                         new HiveTile(icontypes), new HiveTile(icontypes), new HiveTile(icontypes)};
 
-    String seed = "000000000";
     final char[] blankSeed = {0,0,0, 0,0,0, 0,0,0};
+    String seed = String.valueOf(blankSeed);
 
     ArrayList<Tuple<Integer, Integer>> moves = new ArrayList<Tuple<Integer, Integer>>();
 

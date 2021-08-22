@@ -19,7 +19,7 @@ public class Main extends JFrame implements ActionListener {
     Icon radioIcon  = new ImageIcon("C:\\Users\\ykozh\\Documents\\GitHub\\Hive-Puzzle-Sim\\radio.png");
     Icon bugIcon    = new ImageIcon("C:\\Users\\ykozh\\Documents\\GitHub\\Hive-Puzzle-Sim\\bug.png");
 
-    HivePuzzle puz = new HivePuzzle(barsIcon, AcrossIcon, radioIcon, bugIcon); 
+    HivePuzzle puz = new HivePuzzle(barsIcon, AcrossIcon, radioIcon, bugIcon);
 
     JPanel optionsContainer;
     String[] options = {"2 steps", "3 steps", "4 steps", "5 steps"};
@@ -58,7 +58,7 @@ public class Main extends JFrame implements ActionListener {
         movecontainer = new JPanel();
         movecontainer.setLayout(new FlowLayout());
         movecontainer.add(movesLabel);
-        seedLabel = new JLabel("Seed: " + puz.seed, SwingConstants.RIGHT);
+        seedLabel = new JLabel("Seed: " + readifySeed(puz.seed), SwingConstants.RIGHT);
         movecontainer.add(seedLabel);
         
         // <-- setting up keypad buttons
@@ -178,7 +178,8 @@ public class Main extends JFrame implements ActionListener {
 		} else if (e.getSource() == topRight){ // TOP RIGHT
             puz.makeMove(0,0);
             movesNum++;            
-            movesLabel.setText(moves + movesNum);      
+            movesLabel.setText(moves + movesNum);   
+            System.out.println(readifySeed(puz.seed));
             updateBoard(puz);
         } else if (e.getSource() == topMid){ // TOP MID
             puz.makeMove(0,1);            
@@ -302,5 +303,6 @@ public class Main extends JFrame implements ActionListener {
         //timer.setInitialDelay(0);    
 		Main coo = new Main(timer);
         timer.addActionListener(coo);          
+        //timer.start();
 	}
 }
