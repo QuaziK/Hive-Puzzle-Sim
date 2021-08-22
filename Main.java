@@ -137,10 +137,12 @@ public class Main extends JFrame implements ActionListener {
         // add utility container to global container
         container.add(utilities);
 
+        // container for seed generation tools
         optionsContainer = new JPanel();
         optionsContainer.setLayout(new FlowLayout());
         optionsContainer.setPreferredSize(new Dimension(250,300));
         
+        // seed generation objects
         setRandomButton = new JButton("RNDM");
         setRandomButton.setPreferredSize(new Dimension(100,25));
         setRandomButton.addActionListener(this);
@@ -159,10 +161,11 @@ public class Main extends JFrame implements ActionListener {
         optionsContainer.add(customSeedField);
         optionsContainer.add(loadSeedButton);
         
+        // add seed generation tools into global container
         container.add(optionsContainer);
 
         add(container);
-        setResizable(false);
+        setResizable(false); // cant change size
         setSize(250, 420);
 		setVisible(true);
 	}
@@ -179,7 +182,6 @@ public class Main extends JFrame implements ActionListener {
             puz.makeMove(0,0);
             movesNum++;            
             movesLabel.setText(moves + movesNum);   
-            System.out.println(readifySeed(puz.seed));
             updateBoard(puz);
         } else if (e.getSource() == topMid){ // TOP MID
             puz.makeMove(0,1);            
@@ -244,6 +246,8 @@ public class Main extends JFrame implements ActionListener {
         if (e.getSource() == setRandomButton) { // RNDM 
             customSeedField.setText(readifySeed(puz.generateSeed()));
         } else if (e.getSource() == loadSeedButton) { // LOAD
+            movesNum = 0;
+            movesLabel.setText(moves + movesNum);
             puz.setSeed(unredifySeed(customSeedField.getText()));
             updateBoard(puz);
         } else if (e.getSource() == stepOptionsBox){ // STEPS BOX
@@ -267,7 +271,7 @@ public class Main extends JFrame implements ActionListener {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException E){
-                
+                // lol
             }
         }
 	}
