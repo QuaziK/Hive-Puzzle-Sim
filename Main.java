@@ -248,7 +248,11 @@ public class Main extends JFrame implements ActionListener {
         } else if (e.getSource() == loadSeedButton) { // LOAD
             movesNum = 0;
             movesLabel.setText(moves + movesNum);
-            puz.setSeed(unredifySeed(customSeedField.getText()));
+            try {
+                puz.setSeed(unredifySeed(customSeedField.getText()));
+            } catch (IndexOutOfBoundsException E){
+                customSeedField.setText(readifySeed(puz.seed));
+            }
             updateBoard(puz);
         } else if (e.getSource() == stepOptionsBox){ // STEPS BOX
             String s = (String) stepOptionsBox.getSelectedItem();

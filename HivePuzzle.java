@@ -147,13 +147,17 @@ public class HivePuzzle {
         return String.valueOf(outc);
     }
 
-    public void setSeed(String seed){
-        this.seed = seed;
+    public void setSeed(String seed) throws IndexOutOfBoundsException{
         char[] newseed = seed.toCharArray();
         seed = String.valueOf(newseed);
         for (int ii = 0; ii < 9; ii++){
-            board[ii].setSeed((int)newseed[ii]);
+            if ((int)newseed[ii] > 3 || (int)newseed[ii] < 0){
+                throw new IndexOutOfBoundsException();
+            } else {
+                board[ii].setSeed((int)newseed[ii]);
+            }
         }        
+        this.seed = seed;
     }
 
     public String generateStepSeed(int steps){
